@@ -25,6 +25,11 @@ window.onload = function loadUserData() {
 
 function userLogout(){
     sessionStorage.clear();
+    localStorage.removeItem("currentUser")
+}
+
+window.onunload = function clearLocalStorage(){
+    localStorage.removeItem("currentUser")
 }
 
 loadImage = function() {

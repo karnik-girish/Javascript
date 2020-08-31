@@ -37,6 +37,7 @@ function onRegisterUser(){
                             userLst.push(user);
                             localStorage.setItem("RegisteredUsers",JSON.stringify(userLst));
                             alert("User registration successful"); 
+                            clearFields()
                         }else{
                             throw ("User already exist");}
                     //}else{
@@ -51,7 +52,17 @@ function onRegisterUser(){
         
 
 }
+function clearFields(){
+    document.getElementById("fname").value = ""        
+    document.getElementById("lname").value = ""   
+    document.getElementById("email").value = ""   
+    document.getElementById("password").value = "" 
+    document.getElementById("male").checked = false
+    document.getElementById("female").checked = false          
+    document.getElementById("address").value = ""   
+    document.getElementById("profileImage").src = ""  
 
+}
 function validateEmail(emailId,usersData) 
 {
     let result =  true;

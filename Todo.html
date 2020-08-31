@@ -53,18 +53,18 @@
                 </td>
                 <td>
                     <select id="isReminder" onchange="showDateSelection()">
-                        <option value="No">No</option> 
+                        <option value="No" selected="selected">No</option> 
                         <option value="Yes">Yes</option>
                                               
                       </select>
                 </td>            
             </tr> 
-            <tr id="dateCtrl">
+            <tr id="dateCtrl" hidden = true>
                 <td>
                     <label for="reminderDte">Select reminder date:</label>
                 </td>
                 <td>
-                    <input type="date" id="reminderDte" name="reminderDte">
+                    <input type="date" id="reminderDte" name="reminderDte" onchange="validateDate(event)">
                 </td>            
             </tr>
             <tr>

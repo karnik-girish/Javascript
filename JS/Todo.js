@@ -10,8 +10,8 @@ function userDetails(){
       
         if(sessionUser != null){
             getFromLocalStorage()
-            document.getElementById("userInfo").innerText = sessionUser.firstName + " " + sessionUser.lastName ;  
-       
+            document.getElementById("userInfo").innerText = sessionUser.firstName + " " + sessionUser.lastName ;
+            //showDteCtrl.hidden= true;     
   
         }else{ 
             alert("Session expired ,Please login to load data");
@@ -23,8 +23,24 @@ function userDetails(){
 
 function userLogout(){
     sessionStorage.clear();
+    localStorage.removeItem("currentUser")
 }
 
+window.onunload = function clearLocalStorage(){
+    localStorage.removeItem("currentUser")
+}
+
+
+
+function validateDate(e){
+   var selectedDte = document.getElementById("reminderDte").value
+   if(selectedDte<Date.now)
+   {
+       alert("You can't selected passed date");
+       document.getElementById("reminderDte").value=""
+       document.getElementById("reminderDte").focus
+   }
+}
 
 function getFromLocalStorage() {     
     const userToDoLst = localStorage.getItem('userToDoLst');   
@@ -35,15 +51,16 @@ function getFromLocalStorage() {
     }
   }
  
-function showDateSelection(){
+function showDateSelection(){    
     var showDteOptn = document.getElementById("isReminder").value;
     var showDteCtrl = document.getElementById("dateCtrl")
-    if(showDteOptn=="No"){        
+    if(showDteOptn=="Yes"){        
+        showDteCtrl.hidden= false;
+    }else
+    {
         showDteCtrl.hidden= true;
     }
-    else{
-        showDteCtrl.hidden= false;
-    }
+   
 }
 
 function renderTodo(toDoLst){ 
