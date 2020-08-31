@@ -7,7 +7,7 @@
     <script src="/JS/Registration.js"></script>
 </head>
 <body>
-    <form>
+
         <table>
             <th>
                 <tr>
@@ -64,7 +64,9 @@
                         <label for="img">Profile image:</label>
                     </td>
                     <td>
-                        <input type="file" id="img" name="img" accept="image/*" required>
+                        <!-- <input type="file" id="img" name="img" accept="image/*" onchange="loadImage()" required> -->
+                        <input type="file" id="profileImage"  accept="image/*" onchange="loadImage();" />
+                            <img style="height: 50%;width: 50%;" id="output" />
                     </td>
                 </tr>
                 <tr>
@@ -79,6 +81,6 @@
                 </tr>
             </th>
         </table>
-    </form>
+
 </body>
 </html>
