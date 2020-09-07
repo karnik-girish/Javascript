@@ -24,7 +24,7 @@ function onSignIn(){
                 else{
                     sessionStorage.setItem("loggedInUser", JSON.stringify(user));
                     localStorage.setItem("currentUser", JSON.stringify(user));
-                    window.location.href ="Profile.html"
+                    window.location.href ="todo.html"
                }
             }
             else{
@@ -42,7 +42,7 @@ function checkUserloggedIn(){
     {        
         alert("user is already logged in")
         sessionStorage.setItem("loggedInUser", JSON.stringify(user));
-        window.location.href ="Profile.html"
+        window.location.href ="todo.html"
     }
 }
 

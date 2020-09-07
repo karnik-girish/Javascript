@@ -1,45 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToDo list</title>
     <script src="/js/Todo.js"></script>
-    <style>
-        /* #getTodo {
-          border: 1px solid black;
-          margin-top: 30px;      
-          margin-bottom: 100px;
-          margin-right: 150px;
-          margin-left: 80px;
-          background-color: lightblue;    
-          padding-left: 350px;   
-        }*/
-        #userInfo {
-            text-align: right;            
-        } 
+<style>
 
-        </style>
+body {
+   font-family: Arial;
+  background-color: #3498DB;
+  /* padding: 50px;  */
+  }
+
+
+  #left { 
+    width:600px; 
+    height: 600%;
+    float:left;
+    padding: 10px ,30px,10px,10px;
+ }
+ 
+ #right { 
+    width:700px; 
+    height:600%; 
+    background: #3498DB;
+    float:left
+ }
+
+
+.displatToDoTh{
+    padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+
+.displayToDoTd{
+    padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+#filter{   
+    text-align: center;
+    margin-top: 100px;
+   } 
+#displayToDo{
+    padding: 20px , 50px,50px,50px;   
+}
+
+
+#addToDo{
+    padding: 150px;
+    /* background-color: #FFF; */
+    border:"1px solid black";
+    /* padding: 50px, 150px , 150px,150px; */
+    padding: 10px; 
+    margin-top: 100px;  
+    border:1px solid #ddd
+}
+
+ .addToDoTd{
+    padding: 8px;
+  text-align: left;
+} 
+
+#greetUser{
+ text-align: right;
+}
+
+/* form {
+margin: 10px auto;
+width: 300px;
+} */
+</style>
 </head>
 <body onload="userDetails()">
-    <p id="userInfo"></p>
-    <a href="/SignIn.html" onclick="userLogout()">Logout</a>
-    <div id="getTodo">
-        <form>  
-        <table>
-            <tr>
-                <td>
+    <div id="left"> 
+        <div id=filter>
+            <label for="filter"> Filter</label> <input type="text" id="toDoSearch" onkeyup="searchToDo()" placeholder="Search todo" >
+        </div>
+        <h3 id="toDoHeader"></h3>  
+        <ul class="list-group" id="todoDisplay" style="list-style-type: none;">
+        </ul>
+        <label for="category"> Show by Category</label>
+        <input type ="button" onclick="filterToDo('Office')" value="Office" > 
+        <input type ="button" onclick="filterToDo('Personal')" value="Personal" > 
+        <input type ="button"  onclick="filterToDo('Social')" value="Social" > 
+        <input type ="button"  onclick="filterToDo('')" value="Show All" >        
+    </div>
+
+<div id="right">
+    <form>
+        <table id="addToDo" >
+            <tr class="displayToDoTr">
+                <td class ="addToDoTd">
                     <label for="toDoItem">Enter ToDo</label>
                 </td>
-                <td>
+                <td class ="addToDoTd">
                     <input type="text" id="todoStr" name="todoStr" required>
                 </td>            
             </tr>      
-            <tr>
-                <td>
+            <tr class="displayToDoTr">
+                <td class ="addToDoTd">
                     <label for="category">Choose Category</label>
                 </td>
-                <td>
+                <td class ="addToDoTd">
                     <select id="category">
                         <option value="Office">Office</option>
                         <option value="Personal">Personal</option>
@@ -47,11 +111,11 @@
                       </select>
                 </td>            
             </tr>
-            <tr>
-                <td>
+            <tr class="displayToDoTr">
+                <td class ="addToDoTd">
                     <label for="isReminder">Is Reminder</label>
                 </td>
-                <td>
+                <td class ="addToDoTd">
                     <select id="isReminder" onchange="showDateSelection()">
                         <option value="No" selected="selected">No</option> 
                         <option value="Yes">Yes</option>
@@ -59,66 +123,58 @@
                       </select>
                 </td>            
             </tr> 
-            <tr id="dateCtrl" hidden = true>
-                <td>
+            <tr class="displayToDoTr" id="dateCtrl" hidden = true>
+                <td class ="addToDoTd">
                     <label for="reminderDte">Select reminder date:</label>
                 </td>
-                <td>
+                <td class ="addToDoTd">
                     <input type="date" id="reminderDte" name="reminderDte" onchange="validateDate(event)">
                 </td>            
             </tr>
-            <tr>
-                <td>
+            <tr class="displayToDoTr">
+                <td class ="addToDoTd">
                     <label for="isPublic">Is public</label>
                 </td>
-                <td>
+                <td class ="addToDoTd">
                     <select id="isPublic">
                         <option value="No">No</option> 
                         <option value="Yes">Yes</option>                
                       </select>
                 </td>            
             </tr>
-            <tr>
-                <td>
+            <tr class="displayToDoTr">
+                <td class ="addToDoTd">
                     <label for="img">Upload Attachment:</label>
                 </td>
-                <td>                   
-                    <input type="file" id="profileImage"  accept="image/*" onchange="loadImage();" />
+                <td class ="addToDoTd">                    
+                    <input type="file" id="profileImage"  accept="image/*" onchange="loadImage()" />
                         <img style="height: 50%;width: 50%;" id="output" />
                 </td>
             </tr>
-            <tr>
+            <tr id="isDoneFlag" class="displayToDoTr" hidden = true>
+                <td class ="addToDoTd">
+                    <label for="isDone">Mark as Done</label>
+                </td>
+                <td class ="addToDoTd">
+                    <select id="isDone">
+                        <option value="No">No</option> 
+                        <option value="Yes">Yes</option>                
+                      </select>
+                </td>            
+            </tr>
+            <tr class="displayToDoTr">
                 <td colspan="2" align="center">
                     <input id="addtodo" type="submit" value="Add" onclick="addToDo()">
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <label for="filter">Select Filter</label>
-                </td>
-                <td>
-                    <input type="radio" id="Personal" name="filter" value="Personal" onclick="filterToDo(id)" > <label for="Personal">Personal</label>
-                    <input type="radio" id="Office" name="filter" value="Office" onclick="filterToDo(id)">  <label for="Office">Office</label>
-                    <input type="radio" id="Social" name="filter" value="Social" onclick="filterToDo(id)">  <label for="Social">Social</label>
-                    <input type="radio" id="All" name="filter" value="All" onclick="filterToDo(id)">  <label for="All"> Show All</label>
-                </td>
-            </tr>
         </table>
+    </form>
+</div>
 
-      
-
-        </form>
-
-
-     
-
-
-        <ul id="todoDisplay" style="list-style-type: none;">
-
-
-        </ul>
-    </div> 
-
-    
+<div id="greetUser">
+    <h3 id="userInfo"></h3>   
+    <a  href="/Profile.html">My profile</a></br>    
+    <a id="logoutUser" href="/SignIn.html" onclick="userLogout()">Logout</a>
+</div>
 </body>
 </html>

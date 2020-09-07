@@ -25,12 +25,13 @@ function onRegisterUser(){
                         image:image
                     }
                     
-            if (!ValidateEmailFormat(user.email)){
-                throw {toString: function() { return "You have entered an invalid email address!"; } }; 
-            }
+
             if (user.firstName == "" || user.lastName =="" || user.email ==""|| user.pwd =="" || user.gender =="" || user.address =="" || user.image ==""){        
                 throw {toString: function() { return "Please fill the information"; } }; 
             }else{
+                if (!ValidateEmailFormat(user.email)){
+                    throw {toString: function() { return "You have entered an invalid email address!"; } }; 
+                }
                     var userLst = JSON.parse(localStorage.getItem("RegisteredUsers")) || [];
                     //if(userLst.length>0){   
                         if(validateEmail(user.email,userLst)!=true){

@@ -5,14 +5,20 @@ const sessionUser =  JSON.parse(sessionStorage.getItem("loggedInUser"));
 let toDoLst=[]
 let editToDoId ;
 
+
+let resStr = "Today's due task's : "
+function concateString(item) {
+    resStr += item.todoTask + " ";
+    document.getElementById("dueToday").innerHTML = resStr;
+  }
+
 function userDetails(){
     try {
       
         if(sessionUser != null){
             getFromLocalStorage()
             document.getElementById("userInfo").innerText = sessionUser.firstName + " " + sessionUser.lastName ;
-            //showDteCtrl.hidden= true;     
-  
+           
         }else{ 
             alert("Session expired ,Please login to load data");
              window.location.href = "SignIn.html";}
@@ -33,10 +39,11 @@ window.onunload = function clearLocalStorage(){
 
 
 function validateDate(e){
-   var selectedDte = document.getElementById("reminderDte").value
-   if(selectedDte<Date.now)
+   var selectedDte = document.getElementById("reminderDte").value  
+    var today= new Date().toISOString().slice(0,10)
+   if(selectedDte <today)
    {
-       alert("You can't selected passed date");
+       alert("You can't select passed date");
        document.getElementById("reminderDte").value=""
        document.getElementById("reminderDte").focus
    }
@@ -48,6 +55,9 @@ function getFromLocalStorage() {
         toDoLst = JSON.parse(userToDoLst);
         var toDoLst1 = toDoLst.filter((e) => e.user == sessionUser.email);
       renderTodo(toDoLst1);
+      document.getElementById("toDoHeader").innerText = "My Todo's"
+    }else{
+        document.getElementById("toDoHeader").innerText = "You don't have any todo items"      
     }
   }
  
@@ -71,20 +81,38 @@ function renderTodo(toDoLst){
            const chkBoxCheck = item.isDone  
            console.log(item)
             const li = document.createElement('li');
+
             if(item.isDone){
                 li.innerHTML = ` 
-                <input type="checkbox" onclick="updateState(${item.todoId})" checked ${item.isDone}>               
-                  ${item.todoTask}              
-                  <button id="deleteToDo"  onclick="deleteToDo(${item.todoId})">Delete</button>         
+                <s><input type="checkbox">               
+                  ${item.todoTask}
+                  <button id="editToDo" onclick="editTodo(${item.todoId})">Edit</button>
+                  <button id="deleteToDo"  onclick="deleteToDo(${item.todoId})">Delete</button></s>        
                 `;
             }else{
                 li.innerHTML = ` 
-                <input type="checkbox" onclick="updateState(${item.todoId})" ${item.isDone}>               
-                  ${item.todoTask}
-                  <button id="editToDo" onclick="editTodo(${item.todoId})">Edit</button>
-                  <button id="deleteToDo"  onclick="deleteToDo(${item.todoId})">Delete</button>         
-                `;
+                 <input type="checkbox">               
+                   ${item.todoTask}
+                   <button id="editToDo" onclick="editTodo(${item.todoId})">Edit</button>
+                   <button id="deleteToDo"  onclick="deleteToDo(${item.todoId})">Delete</button>         
+                 `;
             }
+            
+            // li.setAttribute("class", "list-group-item")
+            // if(item.isDone){
+            //     li.innerHTML = ` 
+            //     <input type="checkbox" onclick="updateState(${item.todoId})" checked ${item.isDone}>               
+            //       ${item.todoTask}              
+            //       <button id="deleteToDo"  onclick="deleteToDo(${item.todoId})">Delete</button>         
+            //     `;
+            // }else{
+            //     li.innerHTML = ` 
+            //     <input type="checkbox" onclick="updateState(${item.todoId})" ${item.isDone}>               
+            //       ${item.todoTask}
+            //       <button id="editToDo" onclick="editTodo(${item.todoId})">Edit</button>
+            //       <button id="deleteToDo"  onclick="deleteToDo(${item.todoId})">Delete</button>         
+            //     `;
+            // }
             getLst.append(li);
           });
     } catch (error) {
@@ -112,6 +140,13 @@ function filterToDo(id){
 
 }
 
+function validateFields(toDoTask){
+      
+    if (toDoTask =="" ){
+        throw {toString: function() { return "please fill todo task details"; } }; 
+    }
+
+}
 
 function addToDo(){
     try {  
@@ -122,7 +157,9 @@ function addToDo(){
         const reminderDteIp =  document.getElementById("reminderDte").value
         const isPublicIp = document.getElementById("isPublic").value
         const attachmentIp=  document.getElementById("profileImage").value     
+        const markAsDone = document.getElementById("isDone").value
 
+        validateFields(todoIp)
         if( document.getElementById("addtodo").value == "Update"){    
            const index = toDoLst.findIndex((e) => e.todoId==editToDoId && e.user == sessionUser.email);
             let userTodo = {
@@ -133,7 +170,7 @@ function addToDo(){
                 isReminder :isReminderIp,
                 reminderDte :reminderDteIp,
                 isPublic :isPublicIp,
-                isDone:false,
+                isDone:markAsDone,
                 attachment :attachmentIp
             }
             toDoLst[index] = userTodo;
@@ -151,7 +188,7 @@ function addToDo(){
                 isReminder :isReminderIp,
                 reminderDte :reminderDteIp,
                 isPublic :isPublicIp,
-                isDone:false,
+                isDone:markAsDone,
                 attachment :attachmentIp
             }            
             toDoLst.push(userTodo);
@@ -162,18 +199,6 @@ function addToDo(){
         alert(error);
     }    
 }
-
-
-// document.getElementById("todoDisplay").addEventListener('click',function(event){
-//     if (event.target.type === 'checkbox') {
-//         // toggle the state
-//        alert("checkbox selected");
-//       }  
-//       // check if that is a delete-button
-//       if (event.targe.type==='button') {
-//        alert("delete is selected")
-//       }
-// });
 
 function updateState(todoItemId){ 
     try {
@@ -220,6 +245,8 @@ function updateState(todoItemId){
 function editTodo (todoItemId){
     editToDoId = todoItemId
     document.getElementById("addtodo").value = "Update"
+    var showDoneFlag = document.getElementById("isDoneFlag")         
+    showDoneFlag.hidden= false;
     var todoItem = toDoLst.find(e=>e.todoId==todoItemId)
     document.getElementById("todoStr").value = todoItem.todoTask;
     document.getElementById("category").value= todoItem.category
@@ -227,11 +254,29 @@ function editTodo (todoItemId){
     document.getElementById("reminderDte").value=todoItem.reminderDte
     document.getElementById("isPublic").value=todoItem.isPublic
     document.getElementById("profileImage").value=todoItem.attachment
+    document.getElementById("isDone").value=todoItem.isDone
     document.getElementById("todoStr").focus
 }
 
 function deleteToDo (todoItemId){
-    var todoItems = toDoLst.filter(e=>e.todoId !==todoItemId && e.user == sessionUser.email)
-    localStorage.setItem("userToDoLst",JSON.stringify(todoItems));
-    renderTodo(todoItems);
+    const index = toDoLst.findIndex((e) => e.todoId==todoItemId && e.user == sessionUser.email );
+    toDoLst.splice(index,1)  
+    localStorage.setItem("userToDoLst",JSON.stringify(toDoLst));
+    renderTodo(toDoLst);
 }
+
+
+function searchToDo() {
+   
+    input = document.getElementById("toDoSearch");
+    var filter = input.value.toUpperCase();
+    var lis = document.getElementsByTagName('li');
+    for (var i = 0; i < lis.length; i++) {       
+        var name = lis[i].innerText
+        if (name.toUpperCase().indexOf(filter) > -1) 
+            lis[i].style.display = 'list-item';
+        else
+            lis[i].style.display = 'none';
+    }
+}
+
